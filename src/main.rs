@@ -31,7 +31,7 @@ fn main() {
                 .eq(text_meta_id)
                 .and(
                     num.nullable().eq(
-                        text_chunk::table
+                        text_chunk
                             .select(min(num))
                             .filter(text_meta_id.eq(text_meta_id))
                             .single_value()
