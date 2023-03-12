@@ -1,16 +1,14 @@
 use std::str::FromStr;
 
-use diesel::{AsChangeset, Connection, Identifiable, Insertable, NullableExpressionMethods, OptionalExtension, PgConnection, Queryable, QueryDsl, RunQueryDsl, Selectable};
+use diesel::alias;
 use diesel::dsl::min;
-use diesel::expression_methods::ExpressionMethods;
+use diesel::prelude::*;
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use dotenv::dotenv;
 use uuid::Uuid;
 
-use schema::text_chunk::dsl::*;
-
+use crate::schema::text_chunk::{num, text_meta_id};
 use crate::schema::text_chunk;
-use crate::schema::text_chunk::text_meta_id;
 
 mod schema;
 
@@ -34,15 +32,19 @@ fn main() {
 
     let uuid = Uuid::from_str("0e411b6f-be41-4260-b577-ea93c8ab7634").unwrap();
 
-    let result = text_chunk
-        .filter(text_meta_id.eq(uuid))
+    let (chunk1, chunk2) = alias!(text_chunk as chunk1, text_chunk as chunk2);
+
+    let result = chunk1
+        .filter(chunk1.field(text_meta_id).eq(uuid))
         .filter(
-            num.nullable().eq(
-                text_chunk
-                    .select(min(num))
-                    .filter(text_meta_id.eq(uuid))
-                    .single_value()
-            )
+            chunk1.field(num)
+                .nullable()
+                .eq(
+                    chunk2
+                        .select(min(chunk2.field(num)))
+                        .filter(chunk2.field(text_meta_id).eq(uuid))
+                        .single_value()
+                )
         )
         .first::<DTO>(connection)
         .optional()
