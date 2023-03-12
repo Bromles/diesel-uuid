@@ -1,7 +1,7 @@
-use diesel::{AsChangeset, BoolExpressionMethods, Connection, Identifiable, Insertable, NullableExpressionMethods, OptionalExtension, PgConnection, Queryable, QueryDsl, RunQueryDsl, Selectable};
+use diesel::{AsChangeset, Connection, Identifiable, Insertable, OptionalExtension, PgConnection, Queryable, QueryDsl, Selectable, RunQueryDsl, BoolExpressionMethods};
 use diesel::dsl::min;
-use diesel::sql_types::Uuid;
 use dotenv::dotenv;
+use uuid::Uuid;
 
 use crate::schema::text_chunk;
 use crate::schema::text_chunk::text_meta_id;
@@ -27,7 +27,7 @@ fn main() {
             text_meta_id
                 .eq(text_meta_id)
                 .and(
-                    text_chunk::num.nullable().eq(
+                    text_chunk::num.eq(
                         text_chunk::table
                             .select(min(text_chunk::num))
                             .filter(text_meta_id.eq(text_meta_id))
