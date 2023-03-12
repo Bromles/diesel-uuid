@@ -3,6 +3,7 @@ use std::str::FromStr;
 use diesel::{AsChangeset, Connection, Identifiable, Insertable, NullableExpressionMethods, OptionalExtension, PgConnection, Queryable, QueryDsl, RunQueryDsl, Selectable};
 use diesel::dsl::min;
 use diesel::expression_methods::ExpressionMethods;
+use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
 use dotenv::dotenv;
 use uuid::Uuid;
 
@@ -12,6 +13,8 @@ use crate::schema::text_chunk;
 use crate::schema::text_chunk::text_meta_id;
 
 mod schema;
+
+const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
 
 #[derive(Queryable, Identifiable, Selectable, Insertable, AsChangeset, Debug)]
 #[diesel(table_name = text_chunk)]
@@ -26,6 +29,8 @@ fn main() {
     dotenv().ok();
 
     let connection = &mut PgConnection::establish(std::env::var("DATABASE_URL").unwrap().as_str()).unwrap();
+
+    connection.run_pending_migrations(MIGRATIONS).unwrap();
 
     let uuid = Uuid::from_str("0e411b6f-be41-4260-b577-ea93c8ab7634").unwrap();
 
