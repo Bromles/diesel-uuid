@@ -1,5 +1,5 @@
 use diesel::{AsChangeset, BoolExpressionMethods, Connection, Identifiable, Insertable, NullableExpressionMethods, OptionalExtension, PgConnection, Queryable, QueryDsl, RunQueryDsl, Selectable};
-use diesel::dsl::{min};
+use diesel::dsl::min;
 use diesel::expression_methods::ExpressionMethods;
 use dotenv::dotenv;
 use uuid::Uuid;
@@ -26,7 +26,7 @@ fn main() {
     let connection = &mut PgConnection::establish(std::env::var("DATABASE_URL").unwrap().as_str()).unwrap();
 
     let result = text_chunk
-                .filter(
+        .filter(
             text_meta_id
                 .eq(text_meta_id)
                 .and(
