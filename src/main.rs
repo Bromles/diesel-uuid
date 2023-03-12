@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use diesel::{AsChangeset, BoolExpressionMethods, Connection, Identifiable, Insertable, NullableExpressionMethods, OptionalExtension, PgConnection, Queryable, QueryDsl, RunQueryDsl, Selectable};
+use diesel::{AsChangeset, Connection, Identifiable, Insertable, NullableExpressionMethods, OptionalExtension, PgConnection, Queryable, QueryDsl, RunQueryDsl, Selectable};
 use diesel::dsl::min;
 use diesel::expression_methods::ExpressionMethods;
 use dotenv::dotenv;
