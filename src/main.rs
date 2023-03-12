@@ -1,8 +1,11 @@
-use diesel::{AsChangeset, Connection, Identifiable, Insertable, OptionalExtension, PgConnection, Queryable, QueryDsl, Selectable, RunQueryDsl, BoolExpressionMethods, NullableExpressionMethods};
-use diesel::dsl::min;
+use diesel::{AsChangeset, BoolExpressionMethods, Connection, Identifiable, Insertable, NullableExpressionMethods, OptionalExtension, PgConnection, Queryable, QueryDsl, RunQueryDsl, select, Selectable};
+use diesel::dsl::{min, sql};
 use diesel::expression_methods::ExpressionMethods;
+use diesel::sql_types::Bool;
 use dotenv::dotenv;
-use uuid::{Uuid};
+use uuid::Uuid;
+
+use schema::text_chunk::dsl::*;
 
 use crate::schema::text_chunk;
 use crate::schema::text_chunk::text_meta_id;
@@ -21,24 +24,28 @@ pub struct DTO {
 fn main() {
     dotenv().ok();
 
-    let mut connection = PgConnection::establish(std::env::var("DATABASE_URL").unwrap().as_str());
+    let connection = &mut PgConnection::establish(std::env::var("DATABASE_URL").unwrap().as_str()).unwrap();
 
-    let result = text_chunk::table
-        .filter(
+    let result = text_chunk
+                .filter(
             text_meta_id
                 .eq(text_meta_id)
                 .and(
-                    text_chunk::num.nullable().eq(
+                    num.nullable().eq(
                         text_chunk::table
-                            .select(min(text_chunk::num))
+                            .select(min(num))
                             .filter(text_meta_id.eq(text_meta_id))
                             .single_value()
                     )
                 )
         )
-        .first::<DTO>(&mut connection)
+        .first::<DTO>(connection)
         .optional()
         .unwrap();
 
-    println!("{}", result.unwrap().content)
+    if let Some(data) = result {
+        println!("{}", data.content)
+    } else {
+        println!("Not found")
+    }
 }
