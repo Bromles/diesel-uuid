@@ -1,7 +1,6 @@
-use diesel::{AsChangeset, BoolExpressionMethods, Connection, Identifiable, Insertable, NullableExpressionMethods, OptionalExtension, PgConnection, Queryable, QueryDsl, RunQueryDsl, select, Selectable};
-use diesel::dsl::{min, sql};
+use diesel::{AsChangeset, BoolExpressionMethods, Connection, Identifiable, Insertable, NullableExpressionMethods, OptionalExtension, PgConnection, Queryable, QueryDsl, RunQueryDsl, Selectable};
+use diesel::dsl::{min};
 use diesel::expression_methods::ExpressionMethods;
-use diesel::sql_types::Bool;
 use dotenv::dotenv;
 use uuid::Uuid;
 
